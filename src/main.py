@@ -2,6 +2,7 @@
 import os
 import sys
 import subprocess
+from importlib.metadata import version
 
 # Caminho para a pasta Documents
 DOCS_DIR = os.path.expanduser("~/Documents")
@@ -15,7 +16,16 @@ def usage():
     print("  -a                              Verifica dependências desatualizadas em todos os projetos.")
     print("  -g                              Verifica o status do Git em todos os projetos.")
     print("  -n <project_directory>          Roda npx npm-check-updates -u && npm install seguido de um commit.")
+    print("  -v, --version                   Mostra a versão do programa.")
     sys.exit(1)
+
+
+# Função para exibir a versão do programa
+def get_program_version():
+    try:
+        return version('gitman')
+    except Exception:
+        return "Versão desconhecida"
 
 # Função para atualizar dependências de um projeto
 def update_projects(projects, ignored_deps):
@@ -150,6 +160,9 @@ def app():
         elif opt == '-n':
             project_directory = args.pop(0)
             ncu_flag = True
+        elif opt in ('-v', '--version'):
+            print(f"Versão do programa: {get_program_version()}")
+            sys.exit(0)
         else:
             usage()
 
