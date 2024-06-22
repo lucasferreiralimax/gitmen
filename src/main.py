@@ -30,25 +30,30 @@ def update_projects(projects, ignored_deps):
         
         print("Verificando dependências desatualizadas em", project_dir)
         
-        # Gera uma lista de dependências desatualizadas com nome e versão
-        outdated_packages = subprocess.run(['npm', 'outdated', '--parseable', '--depth=0'], capture_output=True, text=True).stdout
-        
-        # Filtra as dependências ignoradas
-        if ignored_deps:
-            ignored_array = ignored_deps.split(',')
-            for ignored_dep in ignored_array:
-                outdated_packages = '\n'.join(line for line in outdated_packages.split('\n') if not line.startswith(ignored_dep + '@'))
-        
-        if outdated_packages.strip():
-            print("Atualizando dependências:", outdated_packages.strip())
-            subprocess.run(['npm', 'install'] + outdated_packages.split(), check=True)
+        try:
+            # Gera uma lista de dependências desatualizadas com nome e versão
+            outdated_packages = subprocess.run(['npm', 'outdated', '--parseable', '--depth=0'], capture_output=True, text=True, check=True).stdout
             
-            # Adiciona mudanças ao Git, cria um commit e faz push
-            subprocess.run(['git', 'add', 'package.json', 'package-lock.json'])
-            subprocess.run(['git', 'commit', '-m', 'update: deps of project'])
-            subprocess.run(['git', 'push'])
-        else:
-            print("Todas as dependências estão atualizadas em", project_dir)
+            # Filtra as dependências ignoradas
+            if ignored_deps:
+                ignored_array = ignored_deps.split(',')
+                for ignored_dep in ignored_array:
+                    outdated_packages = '\n'.join(line for line in outdated_packages.split('\n') if not line.startswith(ignored_dep + '@'))
+            
+            if outdated_packages.strip():
+                print("Atualizando dependências:", outdated_packages.strip())
+                subprocess.run(['npm', 'install'] + outdated_packages.split(), check=True)
+                
+                # Adiciona mudanças ao Git, cria um commit e faz push
+                subprocess.run(['git', 'add', 'package.json', 'package-lock.json'])
+                subprocess.run(['git', 'commit', '-m', 'update: deps of project'])
+                subprocess.run(['git', 'push'])
+            else:
+                print("Todas as dependências estão atualizadas em", project_dir)
+        
+        except subprocess.CalledProcessError as e:
+            print(f"Erro ao verificar/atualizar dependências em {project_dir}:")
+            print(e.stderr)
         
         os.chdir('..')
 
@@ -64,13 +69,19 @@ def ncu_update_projects(projects):
         os.chdir(project_dir)
         
         print("Atualizando todas as dependências em", project_dir, "com npm-check-updates")
-        subprocess.run(['npx', 'npm-check-updates', '-u'], check=True)
-        subprocess.run(['npm', 'install'], check=True)
         
-        # Adiciona mudanças ao Git, cria um commit e faz push
-        subprocess.run(['git', 'add', 'package.json', 'package-lock.json'])
-        subprocess.run(['git', 'commit', '-m', 'update: all deps with npm-check-updates'])
-        subprocess.run(['git', 'push'])
+        try:
+            subprocess.run(['npx', 'npm-check-updates', '-u'], check=True)
+            subprocess.run(['npm', 'install'], check=True)
+            
+            # Adiciona mudanças ao Git, cria um commit e faz push
+            subprocess.run(['git', 'add', 'package.json', 'package-lock.json'])
+            subprocess.run(['git', 'commit', '-m', 'update: all deps with npm-check-updates'])
+            subprocess.run(['git', 'push'])
+        
+        except subprocess.CalledProcessError as e:
+            print(f"Erro ao executar npm-check-updates em {project_dir}:")
+            print(e.stderr)
         
         os.chdir('..')
 
@@ -81,8 +92,15 @@ def check_outdated_in_all_projects():
         if os.path.isdir(full_path):
             print("Entrando no diretório:", full_path)
             os.chdir(full_path)
-            print("Rodando 'outdated' em", full_path)
-            subprocess.run(['npm', 'outdated'])
+            
+            try:
+                print("Rodando 'outdated' em", full_path)
+                subprocess.run(['npm', 'outdated'], check=True)
+            
+            except subprocess.CalledProcessError as e:
+                print(f"Erro ao verificar dependências desatualizadas em {full_path}:")
+                print(e.stderr)
+            
             os.chdir('..')
     
     print("Verificação concluída.")
@@ -94,40 +112,52 @@ def check_git_status_in_all_projects():
         if os.path.isdir(full_path):
             print("Entrando no diretório:", full_path)
             os.chdir(full_path)
-            print("Verificando o status do Git em", full_path)
-            subprocess.run(['git', 'status'])
+            
+            try:
+                print("Verificando o status do Git em", full_path)
+                subprocess.run(['git', 'status'], check=True)
+            
+            except subprocess.CalledProcessError as e:
+                print(f"Erro ao verificar o status do Git em {full_path}:")
+                print(e.stderr)
+            
             os.chdir('..')
     
     print("Verificação de status do Git concluída.")
 
-# Verifica os parâmetros do script
-if len(sys.argv) == 1:
-    usage()
-
-project_directory = ""
-ignored_dependencies = ""
-ncu_flag = False
-
-# Processa os argumentos de linha de comando
-args = sys.argv[1:]
-while args:
-    opt = args.pop(0)
-    if opt == '-u':
-        project_directory = args.pop(0)
-    elif opt == '-i':
-        ignored_dependencies = args.pop(0)
-    elif opt == '-a':
-        check_outdated_in_all_projects()
-    elif opt == '-g':
-        check_git_status_in_all_projects()
-    elif opt == '-n':
-        project_directory = args.pop(0)
-        ncu_flag = True
-    else:
+# Função principal do programa
+def app():
+    # Verifica os parâmetros do script
+    if len(sys.argv) == 1:
         usage()
 
-# Executa o comando apropriado baseado nos parâmetros fornecidos
-if ncu_flag:
-    ncu_update_projects(project_directory)
-elif project_directory:
-    update_projects(project_directory, ignored_dependencies)
+    project_directory = ""
+    ignored_dependencies = ""
+    ncu_flag = False
+
+    # Processa os argumentos de linha de comando
+    args = sys.argv[1:]
+    while args:
+        opt = args.pop(0)
+        if opt == '-u':
+            project_directory = args.pop(0)
+        elif opt == '-i':
+            ignored_dependencies = args.pop(0)
+        elif opt == '-a':
+            check_outdated_in_all_projects()
+        elif opt == '-g':
+            check_git_status_in_all_projects()
+        elif opt == '-n':
+            project_directory = args.pop(0)
+            ncu_flag = True
+        else:
+            usage()
+
+    # Executa o comando apropriado baseado nos parâmetros fornecidos
+    if ncu_flag:
+        ncu_update_projects(project_directory)
+    elif project_directory:
+        update_projects(project_directory, ignored_dependencies)
+
+if __name__ == "__main__":
+    app()
