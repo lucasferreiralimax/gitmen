@@ -74,7 +74,7 @@ def update_projects(projects, ignored_deps, commit_message, base_dir):
                 for package in outdated_packages.split('\n'):
                     package_name = package.split(':')[1]
                     print(f"Atualizando {package_name}")
-                    subprocess.run(['npm', 'install', package_name], check=True)
+                    subprocess.run(['npm', 'install', package_name, '--legacy-peer-deps'], check=True)
                 
                 # Adiciona mudanças ao Git, cria um commit e faz push
                 subprocess.run(['git', 'add', 'package.json', 'package-lock.json'], check=True)
@@ -184,46 +184,51 @@ def check_git_status_in_all_projects(base_dir):
 
 # Função principal do programa
 def app():
-    # Verifica os parâmetros do script
-    if len(sys.argv) == 1:
-        usage()
-
-    base_directory = os.path.expanduser("~/Documents")
-    project_directory = ""
-    ignored_dependencies = ""
-    commit_message = "update: deps of project"
-    ncu_flag = False
-
-    # Processa os argumentos de linha de comando
-    args = sys.argv[1:]
-    while args:
-        opt = args.pop(0)
-        if opt == '-b':
-            base_directory = os.path.expanduser(args.pop(0))
-        elif opt == '-u':
-            project_directory = args.pop(0)
-        elif opt == '-i':
-            ignored_dependencies = args.pop(0)
-        elif opt == '-a':
-            check_outdated_in_all_projects(base_directory)
-        elif opt == '-g':
-            check_git_status_in_all_projects(base_directory)
-        elif opt == '-n':
-            project_directory = args.pop(0)
-            ncu_flag = True
-        elif opt == '-m':
-            commit_message = args.pop(0)
-        elif opt in ('-v', '--version'):
-            print(f"Versão do programa: {get_program_version()}")
-            sys.exit(0)
-        else:
+    try:
+        # Verifica os parâmetros do script
+        if len(sys.argv) == 1:
             usage()
 
-    # Executa o comando apropriado baseado nos parâmetros fornecidos
-    if ncu_flag:
-        ncu_update_projects(project_directory, commit_message, base_directory)
-    elif project_directory:
-        update_projects(project_directory, ignored_dependencies, commit_message, base_directory)
+        project_directory = ""
+        ignored_dependencies = ""
+        ncu_flag = False
+        commit_message = "update: deps of project"
+        base_directory = os.path.expanduser("~/Documents")
+
+        # Processa os argumentos de linha de comando
+        args = sys.argv[1:]
+        while args:
+            opt = args.pop(0)
+            if opt == '-b':
+                base_directory = os.path.expanduser(args.pop(0))
+            elif opt == '-u':
+                project_directory = args.pop(0)
+            elif opt == '-i':
+                ignored_dependencies = args.pop(0)
+            elif opt == '-a':
+                check_outdated_in_all_projects(base_directory)
+            elif opt == '-g':
+                check_git_status_in_all_projects(base_directory)
+            elif opt == '-n':
+                project_directory = args.pop(0)
+                ncu_flag = True
+            elif opt == '-m':
+                commit_message = args.pop(0)
+            elif opt in ('-v', '--version'):
+                print(f"Versão do programa: {get_program_version()}")
+                sys.exit(0)
+            else:
+                usage()
+
+        # Executa o comando apropriado baseado nos parâmetros fornecidos
+        if ncu_flag:
+            ncu_update_projects(project_directory, commit_message, base_directory)
+        elif project_directory:
+            update_projects(project_directory, ignored_dependencies, commit_message, base_directory)
+
+    except KeyboardInterrupt:
+        print("\nExecução do script interrompida.")
+        sys.exit(0)
 
 if __name__ == "__main__":
     app()
