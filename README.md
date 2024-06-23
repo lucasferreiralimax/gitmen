@@ -62,6 +62,23 @@ GitMan is a command-line tool designed to streamline dependency management and G
   gitman -n /path/to/project_directory
   ```
 
+### Additional Commands
+
+- Specify the base directory where projects are located (default is `~/Documents`):
+  ```bash
+  gitman -b /path/to/base_directory -u /path/to/project_directory
+  ```
+
+- Use a custom commit message when updating dependencies:
+  ```bash
+  gitman -u /path/to/project_directory -m "your custom commit message"
+  ```
+
+- Use a custom commit message with `npm-check-updates`:
+  ```bash
+  gitman -n /path/to/project_directory -m "your custom commit message"
+  ```
+
 ### Additional Options
 
 - Display program version:
