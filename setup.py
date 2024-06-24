@@ -23,13 +23,17 @@ setup(
         'Operating System :: Unix',
     ],
     python_requires='>=3.12',
-    py_modules=['src.main'],
+    py_modules=['gitman.main'],
     entry_points={
         'console_scripts': [
-            'gitman = src.main:app',
+            'gitman = gitman.main:app',
         ],
     },
     packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        '': ['translations/*.yml'],
+    },
     install_requires=["python-i18n"],
     keywords='github cli projects dependencies',
 )
