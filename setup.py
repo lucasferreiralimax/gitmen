@@ -34,6 +34,6 @@ setup(
     package_data={
         'gitman': ['translations/*.yml'],
     },
-    install_requires=["python-i18n"],
+    install_requires=["python-i18n", "inquirer"],
     keywords='github cli projects dependencies',
 )
