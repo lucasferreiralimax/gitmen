@@ -1,3 +1,4 @@
+import os
 import i18n
 import platform
 import subprocess
@@ -29,6 +30,10 @@ def i18nConfig():
     if system_lang:
         system_lang = system_lang[:2]
 
-    i18n.load_path.append('gitman/translations')
+     # Determina o caminho absoluto para a pasta translations
+    package_dir = os.path.dirname(os.path.abspath(__file__))
+    translations_path = os.path.join(package_dir, 'translations')
+
+    i18n.load_path.append(translations_path)
     i18n.set('fallback', 'en')
     i18n.set('locale', system_lang)

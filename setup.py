@@ -32,7 +32,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        '': ['translations/*.yml'],
+        'gitman': ['translations/*.yml'],
     },
     install_requires=["python-i18n"],
     keywords='github cli projects dependencies',
