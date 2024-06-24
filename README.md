@@ -81,6 +81,11 @@ GitMan is a command-line tool designed to streamline dependency management and G
 
 ### Additional Options
 
+- Select the language for the CLI interface:
+  ```bash
+  gitman language
+  ```
+
 - Display program version:
   ```bash
   gitman -v
