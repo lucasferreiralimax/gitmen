@@ -1,19 +1,20 @@
 import os
 import subprocess
+import i18n
 
 # Função para atualizar dependências de um projeto
-def update_projects(projects, ignored_deps, commit_message, base_dir):
+def projects_update(projects, ignored_deps, commit_message, base_dir):
     project_list = projects.split(',')
     
     for project_dir in project_list:
         full_path = os.path.join(base_dir, project_dir)
         if not os.path.isdir(full_path):
-            print(f"O diretório {full_path} não existe.")
+            print(i18n.t('update.up_directory_not_exist').format(fullpath=full_path))
             continue
         
         os.chdir(full_path)
         
-        print(f"Verificando dependências desatualizadas em {full_path}")
+        print(i18n.t('update.up_checking_outdated').format(fullpath=full_path))
         
         try:
             # Gera uma lista de dependências desatualizadas com nome e versão
@@ -23,8 +24,8 @@ def update_projects(projects, ignored_deps, commit_message, base_dir):
             )
             
             # Exibir a saída completa para depuração
-            print(f"Saída do npm outdated:\n{outdated_result.stdout}")
-            print(f"Erros do npm outdated:\n{outdated_result.stderr}")
+            print(i18n.t('update.up_outdated_output').format(output=outdated_result.stdout))
+            print(i18n.t('update.up_outdated_errors').format(errors=outdated_result.stderr))
 
             # Se houver dependências desatualizadas, outdated_result.returncode será 1
             if outdated_result.returncode not in [0, 1]:
@@ -41,7 +42,7 @@ def update_projects(projects, ignored_deps, commit_message, base_dir):
                     )
             
             if outdated_packages:
-                print("Dependências desatualizadas encontradas. Atualizando dependências:")
+                print(i18n.t('update.up_outdated_found'))
                 for package in outdated_packages.split('\n'):
                     package_name = package.split(':')[1]
                     print(f"  - {package_name}")
@@ -49,21 +50,24 @@ def update_projects(projects, ignored_deps, commit_message, base_dir):
                 # Atualiza cada pacote individualmente
                 for package in outdated_packages.split('\n'):
                     package_name = package.split(':')[1]
-                    print(f"Atualizando {package_name}")
+                    print(i18n.t('update.up_updating_package').format(package_name=package_name))
                     subprocess.run(['npm', 'install', package_name, '--legacy-peer-deps'], check=True)
                 
                 # Adiciona mudanças ao Git, cria um commit e faz push
                 subprocess.run(['git', 'add', 'package.json', 'package-lock.json'], check=True)
                 subprocess.run(['git', 'commit', '-m', commit_message], check=True)
                 subprocess.run(['git', 'push'], check=True)
+                
+                print(i18n.t('update.up_git_commit_message').format(message=commit_message))
+                print(i18n.t('update.up_git_push'))
             else:
-                print(f"Todas as dependências estão atualizadas em {full_path}")
+                print(i18n.t('update.up_all_to_date').format(fullpath=full_path))
         
         except subprocess.CalledProcessError as e:
-            print(f"Erro ao verificar/atualizar dependências em {full_path}:")
-            print(f"Comando: {e.cmd}")
-            print(f"Retorno do comando: {e.returncode}")
-            print(f"Saída: {e.output}")
-            print(f"Erro: {e.stderr}")
+            print(i18n.t('update.up_error').format(fullpath=full_path))
+            print(i18n.t('update.up_command').format(command=e.cmd))
+            print(i18n.t('update.up_return_code').format(returncode=e.returncode))
+            print(i18n.t('update.up_output').format(output=e.output.decode()))
+            print(i18n.t('update.up_error_details').format(errors=e.stderr.decode()))
         
         os.chdir('..')

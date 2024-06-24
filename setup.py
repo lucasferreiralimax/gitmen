@@ -29,6 +29,7 @@ setup(
             'gitman = src.main:app',
         ],
     },
-    keywords='github cli projects dependencies',
     packages=find_packages(),
+    install_requires=["python-i18n"],
+    keywords='github cli projects dependencies',
 )

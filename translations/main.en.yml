@@ -1,0 +1,13 @@
+en:
+  usage:
+    description: "Usage: %{name} [-b <base_directory>] [-u <project_directory>] [-i <ignored_dependencies>] [-a] [-g] [-n <project_directory>] [-m <commit_message>]"
+    line1: "-b <base_directory>             Base directory where projects are located. (default: ~/Documents)"
+    line2: "-u <project_directory>          Updates the dependencies of the specified project directory."
+    line3: "                                 If multiple projects are provided, separate them with a comma."
+    line4: "-i <ignored_dependencies>       List of dependencies to be ignored, separated by a comma."
+    line5: "-a                              Checks outdated dependencies in all projects."
+    line6: "-g                              Checks the Git status in all projects."
+    line7: "-n <project_directory>          Runs npx npm-check-updates -u && npm install followed by a commit."
+    line8: "-m <commit_message>             Commit message to be used in updates. (optional)"
+    line9: "-v, --version                   Shows the program version."
+  interrupted: "\nScript execution interrupted."

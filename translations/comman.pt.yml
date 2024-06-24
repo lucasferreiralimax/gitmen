@@ -1,0 +1,3 @@
+pt:
+  version: "Versão do programa: %{version}"
+  version_not_found: "Versão desconhecida"
