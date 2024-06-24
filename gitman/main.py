@@ -23,7 +23,7 @@ gitman = """
 def usage():
     print(gitman)
     print(i18n.t('main.usage.description'))
-    for i in range(1, 9):
+    for i in range(1, 10):
         new_line = 'line' + str(i)
         print(i18n.t('main.usage.'+ new_line))
     sys.exit(1)
