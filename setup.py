@@ -30,5 +30,5 @@ setup(
         ],
     },
     keywords='github cli projects dependencies',
-    packages=find_packages('src')
+    packages=find_packages(),
 )
