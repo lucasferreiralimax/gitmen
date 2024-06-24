@@ -1,8 +1,9 @@
 from importlib.metadata import version
+import i18n
 
 # Função para exibir a versão do programa
 def get_cli_version():
     try:
-        return version('gitman')
+        print(i18n.t('comman.version', version=version('gitman')))
     except Exception:
-        return "Versão desconhecida"
+        print(i18n.t('comman.version_not_found'))

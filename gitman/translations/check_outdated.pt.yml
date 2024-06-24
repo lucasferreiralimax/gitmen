@@ -1,0 +1,5 @@
+pt:
+  entering_directory: "Entrando no diretório: %{fullpath}"
+  running_outdated: "Rodando 'outdated' em %{fullpath}"
+  error: "Erro ao verificar dependências desatualizadas em %{fullpath}:"
+  complete_check: "Verificação concluída."

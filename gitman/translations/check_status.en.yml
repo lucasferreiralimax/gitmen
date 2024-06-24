@@ -1,0 +1,5 @@
+en:
+  entering_directory: "Entering directory: %{fullpath}"
+  checking_git_status: "Checking Git status in %{fullpath}"
+  git_error: "Error checking Git status in %{fullpath}:"
+  complete_status: "Git status check completed."

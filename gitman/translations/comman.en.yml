@@ -1,0 +1,3 @@
+en:
+  version: "Program version: %{version}"
+  version_not_found: "Version not found"

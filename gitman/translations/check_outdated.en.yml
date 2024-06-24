@@ -1,0 +1,5 @@
+en:
+  entering_directory: "Entering directory: %{fullpath}"
+  running_outdated: "Running 'outdated' in %{fullpath}"
+  error: "Error checking outdated dependencies in %{fullpath}:"
+  complete_check: "Check completed."
