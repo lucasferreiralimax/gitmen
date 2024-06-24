@@ -2,7 +2,7 @@
 import os
 import sys
 import i18n
-from .config import i18nConfig
+from .config import i18nConfig, select_language
 from .commands import projects_update
 from .commands import ncu_update
 from .commands import get_cli_version
@@ -62,6 +62,9 @@ def app():
                 ncu_flag = True
             elif opt == '-m':
                 commit_message = args.pop(0)
+            elif opt == 'language':
+                select_language()
+                sys.exit(0)
             elif opt in ('-v', '--version'):
                 get_cli_version()
                 sys.exit(0)
