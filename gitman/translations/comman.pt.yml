@@ -1,3 +1,5 @@
 pt:
+  language_set: "Idioma definido para %{language}"
+  select_language: "Selecione o idioma"
   version: "Versão do programa: %{version}"
   version_not_found: "Versão desconhecida"

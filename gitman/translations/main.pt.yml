@@ -1,12 +1,13 @@
 pt:
   usage:
-    description: "Uso: gitman [-b <base_directory>] [-u <project_directory>] [-i <ignored_dependencies>] [-a] [-g] [-n <project_directory>] [-m <commit_message>]"
+    description: "Uso: gitman [-b <base_directory>] [-u <project_directory>] [-i <ignored_dependencies>] [-a] [-g] [-n <project_directory>] [-m <commit_message>] [language] [-v, --version]"
     line1: "-b <base_directory>             Diretório base onde os projetos estão localizados. (padrão: ~/Documents)"
     line2: "-u <project_directory>          Atualiza as dependências do diretório de projeto especificado."
-    line3: "                                  Se múltiplos projetos forem fornecidos, separe-os por vírgula."
+    line3: "                                Se múltiplos projetos forem fornecidos, separe-os por vírgula."
     line4: "-i <ignored_dependencies>       Lista de dependências a serem ignoradas, separadas por vírgula."
     line5: "-a                              Verifica dependências desatualizadas em todos os projetos."
     line6: "-g                              Verifica o status do Git em todos os projetos."
     line7: "-n <project_directory>          Roda npx npm-check-updates -u && npm install seguido de um commit."
     line8: "-m <commit_message>             Mensagem de commit a ser usada nas atualizações. (opcional)"
-    line9: "-v, --version                   Mostra a versão do programa."
+    line9: "language                        Selects the language for the CLI interface."
+    line10: "-v, --version                  Mostra a versão do programa."
