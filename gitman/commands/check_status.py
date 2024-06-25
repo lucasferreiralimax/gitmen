@@ -1,6 +1,11 @@
 import os
 import subprocess
 import i18n
+from rich.console import Console
+from rich.rule import Rule
+from gitman.main import gitman
+
+console = Console()
 
 # Função para verificar o status do Git em todos os projetos
 def check_status(base_dir):
@@ -9,17 +14,24 @@ def check_status(base_dir):
         if os.path.isdir(full_path):
             git_folder = os.path.join(full_path, '.git')
             if os.path.exists(git_folder):
-                print(i18n.t('check_status.entering_directory', fullpath=full_path))
                 os.chdir(full_path)
-                
                 try:
-                    print(i18n.t('check_status.checking_git_status', fullpath=full_path))
-                    subprocess.run(['git', 'status'], check=True)
+                    console.print(f":sparkles: {i18n.t('check_status.checking_git_status', fullpath=f'[bold white]{dir}[/bold white]')}")
+                    result = subprocess.run(['git', 'status'], stdout=subprocess.PIPE, text=True)
+                    if "nothing to commit, working tree clean" in result.stdout:
+                        if "On branch" in result.stdout:
+                            first_line = result.stdout.splitlines()[0]
+                            console.print(f":gem: [bold cyan]{first_line}[/bold cyan]")
+                        console.print(f":white_check_mark: [bold green]{i18n.t('check_status.clean_working_tree')}[/bold green]")
+                    else:
+                        subprocess.run(['git', 'status'], check=True)
                 
                 except subprocess.CalledProcessError as e:
-                    print(i18n.t('check_status.git_error', fullpath=full_path))
-                    print(e.stderr)
+                    console.print(f":exclamation: {i18n.t('check_status.git_error', fullpath=f'[bold red]{full_path}[/bold red]')}")
+                    console.print(e.stderr)
                 
                 os.chdir('..')
+                console.print(Rule(style="grey11"))
 
-    print(i18n.t('check_status.complete_status'))
+    console.print(f"[bold red]{gitman}[/bold red]")
+    console.print(f":white_check_mark: {i18n.t('check_status.complete_status')}")
