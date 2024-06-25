@@ -1,5 +1,5 @@
 en:
-  entering_directory: "Entering directory: %{fullpath}"
   checking_git_status: "Checking Git status in %{fullpath}"
   git_error: "Error checking Git status in %{fullpath}:"
+  clean_working_tree: "Working tree clean, nothing to commit."
   complete_status: "Git status check completed."

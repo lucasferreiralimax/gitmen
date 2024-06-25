@@ -1,5 +1,5 @@
 pt:
-  entering_directory: "Entrando no diretório: %{fullpath}"
   checking_git_status: "Verificando o status do Git em %{fullpath}"
   git_error: "Erro ao verificar o status do Git em %{fullpath}:"
+  clean_working_tree: "Git limpo, nada para comprometer."
   complete_status: "Verificação de status do Git concluída."
