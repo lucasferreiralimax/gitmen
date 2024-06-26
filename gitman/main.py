@@ -2,24 +2,16 @@
 import os
 import sys
 import i18n
-from config import i18nConfig, select_language
-from commands import projects_update, ncu_update, get_cli_version, check_outdated, check_status
 from rich.console import Console
+from .config import i18nConfig, select_language
+from .commands import projects_update, ncu_update, get_cli_version, check_outdated, check_status, check_github
+from .codeArt import gitmanArt
 
 console = Console()
-gitman = r"""
-  _______  __  .___________..___  ___.      ___      .__   __. 
- /  _____||  | |           ||   \/   |     /   \     |  \ |  | 
-|  |  __  |  | `---|  |----`|  \  /  |    /  ^  \    |   \|  | 
-|  | |_ | |  |     |  |     |  |\/|  |   /  /_\  \   |  . `  | 
-|  |__| | |  |     |  |     |  |  |  |  /  _____  \  |  |\   | 
- \______| |__|     |__|     |__|  |__| /__/     \__\ |__| \__| 
-                                                               
-"""
 
 # Função para exibir o uso correto do script
 def usage():
-    console.print(f"[bold red]{gitman}[/bold red]")
+    console.print(f"[bold red]{gitmanArt}[/bold red]")
     print(i18n.t('main.usage.description'))
     for i in range(1, 10):
         new_line = 'line' + str(i)
@@ -60,6 +52,9 @@ def app():
                 ncu_flag = True
             elif opt == '-m':
                 commit_message = args.pop(0)
+            elif opt == 'github':
+                check_github()
+                sys.exit(0)
             elif opt == 'language':
                 select_language()
                 sys.exit(0)
@@ -76,8 +71,8 @@ def app():
             projects_update(project_directory, ignored_dependencies, commit_message, base_directory)
 
     except KeyboardInterrupt:                            
-        console.print(f"[bold red]{gitman}[/bold red]")                     
-        console.print(':skull: [bold red3]Gitman execution interrupted; exiting.[/bold red3]')
+        console.print(f"[bold red]{gitmanArt}[/bold red]")                     
+        console.print(':skull: [bold red3]GitmanArt execution interrupted; exiting.[/bold red3]')
         sys.exit(0)
 
     except Exception as e:
