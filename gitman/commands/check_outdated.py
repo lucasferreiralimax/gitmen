@@ -1,15 +1,17 @@
 import os
+import sys
 import subprocess
 import i18n
 import pyperclip
 from rich.console import Console
 from rich.rule import Rule
-from gitman.main import gitman
+from ..codeArt import gitmanArt
+import inquirer
+from inquirer import Checkbox, Text, Confirm
 
 console = Console()
-
-# Lista para armazenar as dependências desatualizadas
-dependencies_to_update = []
+projects_to_update = []
+all_dependencies = {}
 
 # Função para verificar dependências desatualizadas em todos os projetos
 def check_outdated(base_dir):
@@ -22,12 +24,14 @@ def check_outdated(base_dir):
                 os.chdir(full_path)
                 
                 try:
-                    result = subprocess.run(['npm', 'outdated'])
-                    if result.returncode == 0:
+                    default_result = subprocess.run(['npm', 'outdated'])
+                    if default_result.returncode == 0:
                         console.print(f":white_check_mark: [bold]{i18n.t('check_outdated.no_outdated_dependencies', fullpath=f'[bold white]{dir}[/bold white]')}[/bold]")
                     else:
-                        dependencies_to_update.append(dir)
-                        # console.print(f":fire: [bold bright_yellow]{i18n.t('check_outdated.need_update', fullpath=f'[bold white]{dir}[/bold white]')}[/bold bright_yellow]")
+                        text_result = subprocess.run(['npm', 'outdated'], text=True, stdout=subprocess.PIPE)
+                        projects_to_update.append(dir)
+                        dependencies = parse_outdated_output(text_result.stdout)
+                        all_dependencies[dir] = dependencies
                 
                 except subprocess.CalledProcessError as e:
                     if e.stderr:
@@ -37,13 +41,141 @@ def check_outdated(base_dir):
                 os.chdir('..')
                 console.print(Rule(style="grey11"))
     
-    # Imprimir o log com as dependências que precisam ser atualizadas
+    # Verifica se há projetos para atualizar
+    if projects_to_update:
+        # Perguntar se deseja criar o update
+        if confirm_update():
+            selected_projects = select_projects_to_update()
+            console.print(Rule(style="grey11"))
+            
+            # Coletar todas as dependências dos projetos selecionados
+            all_selected_dependencies = []
 
-    if dependencies_to_update:
-        dependencies_list = ", ".join(dependencies_to_update)
-        console.print(f":gem: [turquoise2]gitman -u \"{dependencies_list}\"[/turquoise2]")
+            for project in selected_projects:
+                dependencies = all_dependencies.get(project, [])
+                all_selected_dependencies.extend(dependencies)
+
+            if not all_selected_dependencies:
+                console.print(":x: No dependencies selected to ignore. Exiting application.")
+                sys.exit(0)
+                return
+            
+            # Remover duplicatas e ordenar as dependências
+            all_selected_dependencies = sorted(set(all_selected_dependencies))
+
+            # Exibir as dependências e permitir seleção para ignorar
+            ignored_dependencies = select_dependencies_to_ignore(all_selected_dependencies)
+            console.print(Rule(style="grey11"))
+
+            # Formatar e exibir a lista final de dependências para ignorar
+            ignore_list = ",".join(ignored_dependencies)
+            
+            # Capturar a mensagem do commit
+            commit_message = capture_commit_message()
+
+            # Montar o comando gitman -u com as dependências ignoradas e a mensagem do commit
+            projects_list = ",".join(selected_projects)
+            command_parts = ['gitman', '-u', f'"{projects_list}"']
+
+            if ignore_list:
+                command_parts.extend(['-i', f'"{ignore_list}"'])
+
+            if commit_message:
+                command_parts.extend(['-m', f'"{commit_message}"'])
+
+            command = ' '.join(command_parts)
+            console.print(Rule(style="grey11"))
+            
+            console.print(f"[bash]{command}[/bash]", style="turquoise2")
+            console.print(Rule(style="grey11"))
+
+            # Perguntar se deseja executar o comando
+            if confirm_execution():
+                execute_command(command)
+            else:
+                pyperclip.copy(command)
+
         console.print(Rule(style="grey11"))
-        pyperclip.copy(f"gitman -u \"{dependencies_list}\"")
+    else:
+        console.print(f":warning: {i18n.t('check_outdated.no_projects_update')}")
+        console.print(Rule(style="grey11"))
 
-    console.print(f"[bold red]{gitman}[/bold red]")
+    console.print(f"[bold red]{gitmanArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('check_outdated.complete_check')}")
+
+# Função para capturar a mensagem do commit
+def capture_commit_message():
+    questions_commit = [
+        Text('commit_message',
+             message=i18n.t('check_outdated.commit_message_prompt'),
+             validate=lambda _, x: True  # Aceita qualquer entrada
+        )
+    ]
+    commit_answers = inquirer.prompt(questions_commit)
+    return commit_answers.get('commit_message', '').strip()
+
+# Função para selecionar projetos que precisam ser atualizados
+def select_projects_to_update():
+    questions = [
+        Checkbox('projects',
+                 message=i18n.t('check_outdated.select_projects_message'),
+                 choices=projects_to_update)
+    ]
+    answers = inquirer.prompt(questions)
+    return answers.get('projects', [])
+
+# Função para exibir as dependências e permitir a seleção para ignorar
+def select_dependencies_to_ignore(dependencies):
+    questions_ignore = [
+        Checkbox('ignore_dependencies',
+                 message=i18n.t('check_outdated.select_ignore_dependencies'),
+                 choices=dependencies)
+    ]
+    answers_ignore = inquirer.prompt(questions_ignore)
+    return answers_ignore.get('ignore_dependencies', [])
+
+# Função para analisar a saída do comando npm outdated e extrair as dependências
+def parse_outdated_output(output):
+    dependencies = []
+    if output:
+        lines = output.splitlines()
+        for line in lines[1:]:
+            if line.strip():
+                parts = line.split()
+                dependency_name = parts[0]
+                dependencies.append(dependency_name)
+    return dependencies
+
+# Função para perguntar se o usuário deseja executar o comando
+def confirm_execution():
+    questions = [
+        Confirm('execute',
+                message=i18n.t('check_outdated.confirm_execute_command'),
+                default=True)
+    ]
+    answers = inquirer.prompt(questions)
+    return answers.get('execute', False)
+
+# Função para perguntar se o usuário deseja criar o update
+def confirm_update():
+    questions = [
+        Confirm('update',
+                message=i18n.t('check_outdated.confirm_update'),
+                default=True)
+    ]
+    answers = inquirer.prompt(questions)
+    return answers.get('update', False)
+
+# Função para executar o comando
+def execute_command(command):
+    try:
+        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        console.print(result.stdout)
+        if result.returncode == 0:
+            console.print(f":white_check_mark: {i18n.t('check_outdated.command_executed_successfully')}")
+        else:
+            console.print(f":x: {i18n.t('check_outdated.command_failed')}")
+            console.print(result.stderr)
+    except Exception as e:
+        console.print(f":x: {i18n.t('check_outdated.command_execution_error')}")
+        console.print(str(e))
