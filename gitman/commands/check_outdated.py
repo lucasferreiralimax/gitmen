@@ -5,7 +5,9 @@ import i18n
 import pyperclip
 from rich.console import Console
 from rich.rule import Rule
+
 from ..codeArt import gitmanArt
+from ..commands import projects_update_from_check
 import inquirer
 from inquirer import Checkbox, Text, Confirm
 
@@ -50,10 +52,12 @@ def check_outdated(base_dir):
             
             # Coletar todas as dependências dos projetos selecionados
             all_selected_dependencies = []
+            projects = {}
 
             for project in selected_projects:
                 dependencies = all_dependencies.get(project, [])
                 all_selected_dependencies.extend(dependencies)
+                projects[project] = dependencies
 
             if not all_selected_dependencies:
                 console.print(":x: No dependencies selected to ignore. Exiting application.")
@@ -66,6 +70,12 @@ def check_outdated(base_dir):
             # Exibir as dependências e permitir seleção para ignorar
             ignored_dependencies = select_dependencies_to_ignore(all_selected_dependencies)
             console.print(Rule(style="grey11"))
+
+            for project, dependencies in projects.items():
+                projects[project] = [
+                    [dep for dep in dependencies if dep not in ignored_dependencies],
+                    [dep for dep in dependencies if dep in ignored_dependencies]
+                ]
 
             # Formatar e exibir a lista final de dependências para ignorar
             ignore_list = ",".join(ignored_dependencies)
@@ -91,7 +101,9 @@ def check_outdated(base_dir):
 
             # Perguntar se deseja executar o comando
             if confirm_execution():
-                execute_command(command)
+                # execute_command(command)
+                console.print(f":white_check_mark: {i18n.t('check_outdated.command_executed_successfully')}")
+                projects_update_from_check(projects, commit_message, base_dir)
             else:
                 pyperclip.copy(command)
 
@@ -165,17 +177,3 @@ def confirm_update():
     ]
     answers = inquirer.prompt(questions)
     return answers.get('update', False)
-
-# Função para executar o comando
-def execute_command(command):
-    try:
-        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        console.print(result.stdout)
-        if result.returncode == 0:
-            console.print(f":white_check_mark: {i18n.t('check_outdated.command_executed_successfully')}")
-        else:
-            console.print(f":x: {i18n.t('check_outdated.command_failed')}")
-            console.print(result.stderr)
-    except Exception as e:
-        console.print(f":x: {i18n.t('check_outdated.command_execution_error')}")
-        console.print(str(e))
