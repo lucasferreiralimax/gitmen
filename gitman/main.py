@@ -4,7 +4,7 @@ import sys
 import i18n
 from rich.console import Console
 from .config import i18nConfig, select_language
-from .commands import projects_update, ncu_update, get_cli_version, check_outdated, check_status, check_github
+from .commands import projects_update, ncu_update, angular_update, get_cli_version, check_outdated, check_status, check_github
 from .codeArt import gitmanArt
 
 console = Console()
@@ -29,7 +29,7 @@ def app():
 
         project_directory = ""
         ignored_dependencies = ""
-        ncu_flag = False
+        type_update = ""
         commit_message = "update: deps of project"
         base_directory = os.path.expanduser("~/Documents")
 
@@ -48,8 +48,10 @@ def app():
             elif opt == '-g':
                 check_status(base_directory)
             elif opt == '-n':
+                type_update = "ncu"
                 project_directory = args.pop(0)
-                ncu_flag = True
+            elif opt == 'ng':
+                type_update = "angular"
             elif opt == '-m':
                 commit_message = args.pop(0)
             elif opt == 'github':
@@ -65,8 +67,10 @@ def app():
                 usage()
 
         # Executa o comando apropriado baseado nos parâmetros fornecidos
-        if ncu_flag:
+        if type_update == "ncu":
             ncu_update(project_directory, commit_message, base_directory)
+        if type_update == "angular":
+            angular_update(project_directory, ignored_dependencies, commit_message, base_directory)
         elif project_directory:
             projects_update(project_directory, ignored_dependencies, commit_message, base_directory)
 
