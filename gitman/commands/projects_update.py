@@ -73,16 +73,16 @@ def projects_update(projects, ignored_deps, commit_message, base_dir):
         os.chdir('..')
 
 def projects_update_from_check(projects, commit_message, base_dir):
-    console.print("# Projects_update_from_checks")
-    console.print("# Projects", projects)
     for project in projects:
         full_path = os.path.join(base_dir, project)
-
         if not os.path.isdir(full_path):
             console.print(i18n.t('update.up_directory_not_exist').format(fullpath=full_path))
             continue
 
         os.chdir(full_path)
+
+        console.print(f":sparkles: {i18n.t('update.up_checking_outdated', fullpath=f'[bold white]{project}[/bold white]')}")
+        console.print(Rule(style="grey11"))
 
         try:
             deps_logs(deps_up=projects[project][0], deps_off=projects[project][1])
