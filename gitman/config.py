@@ -8,36 +8,43 @@ import os
 
 CONFIG_FILE = os.path.expanduser("~/.gitman_config.json")
 
+
 def save_config(config):
-    with open(CONFIG_FILE, 'w') as f:
+    with open(CONFIG_FILE, "w") as f:
         json.dump(config, f)
+
 
 def load_config():
     if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, 'r') as f:
+        with open(CONFIG_FILE, "r") as f:
             return json.load(f)
     return {}
 
+
 def set_language(language):
     config = load_config()
-    config['language'] = language
+    config["language"] = language
     save_config(config)
+
 
 def get_language():
     config = load_config()
-    return config.get('language', None)
+    return config.get("language", None)
+
 
 def select_language():
-    languages = ['en', 'pt']
+    languages = ["en", "pt"]
     questions = [
-        inquirer.List('language',
-                      message=i18n.t('comman.select_language'),
-                      choices=languages,
-                    ),
+        inquirer.List(
+            "language",
+            message=i18n.t("comman.select_language"),
+            choices=languages,
+        ),
     ]
     answers = inquirer.prompt(questions)
-    set_language(answers['language'])
-    print(i18n.t('comman.language_set', language=answers['language']))
+    set_language(answers["language"])
+    print(i18n.t("comman.language_set", language=answers["language"]))
+
 
 def i18nConfig():
     # Obter informações do sistema
@@ -45,33 +52,44 @@ def i18nConfig():
     system_lang = get_language()
 
     if not system_lang:
-        if system_info == 'Windows':
+        if system_info == "Windows":
             # Para Windows, usando o módulo winreg para obter o idioma
             import winreg
 
-            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Control Panel\\International", 0, winreg.KEY_READ)
+            key = winreg.OpenKey(
+                winreg.HKEY_CURRENT_USER,
+                "Control Panel\\International",
+                0,
+                winreg.KEY_READ,
+            )
             system_lang, _ = winreg.QueryValueEx(key, "LocaleName")
             winreg.CloseKey(key)
-            
-        elif system_info == 'Darwin':
+
+        elif system_info == "Darwin":
             # Para macOS, usando o comando 'defaults' para obter o idioma
-            proc = subprocess.Popen(['defaults', 'read', '-g', 'AppleLocale'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            proc = subprocess.Popen(
+                ["defaults", "read", "-g", "AppleLocale"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
             out, _ = proc.communicate()
-            system_lang = out.strip().decode('utf-8')
+            system_lang = out.strip().decode("utf-8")
 
         else:
             # Para Linux e outros sistemas baseados em Unix, usando 'locale' para obter o idioma
-            proc = subprocess.Popen(['locale'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            proc = subprocess.Popen(
+                ["locale"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
             out, _ = proc.communicate()
-            system_lang = out.split()[0].decode('utf-8').split('=')[1]
+            system_lang = out.split()[0].decode("utf-8").split("=")[1]
 
         if system_lang:
             system_lang = system_lang[:2]
 
-     # Determina o caminho absoluto para a pasta translations
+    # Determina o caminho absoluto para a pasta translations
     package_dir = os.path.dirname(os.path.abspath(__file__))
-    translations_path = os.path.join(package_dir, 'translations')
+    translations_path = os.path.join(package_dir, "translations")
 
     i18n.load_path.append(translations_path)
-    i18n.set('fallback', 'en')
-    i18n.set('locale', system_lang)
+    i18n.set("fallback", "en")
+    i18n.set("locale", system_lang)
