@@ -4,6 +4,7 @@ import i18n
 import re
 from rich.console import Console
 from rich.rule import Rule
+from ..utils import deps_logs, logger_expection
 
 console = Console()
 
@@ -73,22 +74,6 @@ def angular_update(projects, ignored_dependencies, commit_message, base_dir):
             console.print(f":fire: [bright_cyan]{i18n.t('update.up_git_push')}[/]")
             console.print(Rule(style="grey11"))
         except subprocess.CalledProcessError as e:
-            console.print(i18n.t("update.up_error").format(fullpath=full_path))
-            console.print(i18n.t("update.up_command").format(command=e.cmd))
-            console.print(
-                i18n.t("update.up_return_code").format(returncode=e.returncode)
-            )
-            console.print(i18n.t("update.up_output").format(output=e.output.decode()))
-            console.print(
-                i18n.t("update.up_error_details").format(errors=e.stderr.decode())
-            )
+            logger_expection(e=e, full_path=full_path)
 
         os.chdir("..")
-
-
-def deps_logs(deps_up):
-    for item_install in deps_up:
-        console.print(
-            f":rocket: [cyan]{i18n.t('update.up_update_package')}[/] [bold white]{item_install}[/]"
-        )
-        console.print(Rule(style="grey11"))

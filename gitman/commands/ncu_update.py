@@ -1,7 +1,7 @@
 import os
 import subprocess
 import i18n
-
+from ..utils import logger_expection
 
 # Função para rodar npx npm-check-updates e atualizar
 def ncu_update(projects, commit_message, base_dir):
@@ -78,13 +78,7 @@ def ncu_update(projects, commit_message, base_dir):
             print(i18n.t("ncu_update.ncu_git_push"))
 
         except subprocess.CalledProcessError as e:
-            print(i18n.t("ncu_update.ncu_error").format(fullpath=full_path))
-            print(i18n.t("ncu_update.ncu_command").format(command=e.cmd))
-            print(i18n.t("ncu_update.ncu_return_code").format(returncode=e.returncode))
-            print(i18n.t("ncu_update.ncu_output").format(output=e.output.decode()))
-            print(
-                i18n.t("ncu_update.ncu_error_details").format(errors=e.stderr.decode())
-            )
+            logger_expection(e=e, full_path=full_path)
 
         os.chdir("..")
 
