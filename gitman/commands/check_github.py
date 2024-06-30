@@ -76,6 +76,8 @@ def check_github():
 
     if followers and following:
         display_comparison_table(username, followers, following)
+        # display_comparison_table_back(username, followers, following)
+        
 
     console.print(f"[bold red]{gitmanArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('check_status.complete_status')}")
@@ -123,7 +125,7 @@ def display_comparison_table(username, followers, following):
 
     followers_table = Table(title=f"Followers and Following Comparison for {username}")
     followers_table.add_column("User", style="cyan")
-    followers_table.add_column("Follows Back", style="green")
+    followers_table.add_column("Follows Back?", style="green")
 
     for follower in following_logins:
         follows_back = "Yes" if follower in followers_logins else "No"
@@ -133,3 +135,20 @@ def display_comparison_table(username, followers, following):
 
     console.print(f"Total followers: {len(followers)}")
     console.print(f"Total following: {len(following)}")
+    
+# def display_comparison_table_back(username, followers, following):
+#     followers_logins = {follower["login"]: follower for follower in followers}
+#     following_logins = {followed["login"]: followed for followed in following}
+
+#     followers_table = Table(title=f"Comparison if I'm follow  back of {username}")
+#     followers_table.add_column("User", style="cyan")
+#     followers_table.add_column("Follows Back?", style="green")
+
+#     for follower in followers_logins:
+#         follows_back = "Yes" if follower in following_logins else "No"
+#         followers_table.add_row(follower, follows_back)
+
+#     console.print(followers_table)
+
+#     console.print(f"Total followers: {len(followers)}")
+#     console.print(f"Total following: {len(following)}")
