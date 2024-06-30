@@ -31,7 +31,7 @@ def expo_fix(projects, base_dir):
         try:
             # Executa o comando npx expo install --fix
             result = subprocess.run(
-                ["npx", "expo", "install", "--fix"],
+                ["npx", "expo", "install", "--fix", "--", "--legacy-peer-deps"],
                 check=True,
             )
             console.print(result)
