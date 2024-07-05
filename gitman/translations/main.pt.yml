@@ -1,6 +1,6 @@
 pt:
   usage:
-    description: "Uso: gitman [-b <base_directory>] [-u <project_directory>] [-i <ignored_dependencies>] [-a] [-g] [-n <project_directory>] [-m <commit_message>] [language] [-v, --version]"
+    description: "Uso: gitmen [-b <base_directory>] [-u <project_directory>] [-i <ignored_dependencies>] [-a] [-g] [-n <project_directory>] [-m <commit_message>] [language] [-v, --version]"
     line1: "-b <base_directory>             Diretório base onde os projetos estão localizados. (padrão: ~/Documents)"
     line2: "-u <project_directory>          Atualiza as dependências do diretório de projeto especificado."
     line3: "                                Se múltiplos projetos forem fornecidos, separe-os por vírgula."

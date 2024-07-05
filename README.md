@@ -1,6 +1,6 @@
-# GitMan
+# GitMen
 
-GitMan is a command-line tool designed to streamline dependency management and Git repository status checks across multiple projects.
+GitMen is a command-line tool designed to streamline dependency management and Git repository status checks across multiple projects.
 
 ## Installation
 
@@ -12,10 +12,10 @@ GitMan is a command-line tool designed to streamline dependency management and G
 
 ### Installation Steps
 
-1. Clone the GitMan repository:
+1. Clone the GitMen repository:
    ```bash
-   git clone https://github.com/seu_usuario/gitman.git
-   cd gitman
+   git clone https://github.com/lucasferreiralimax/gitmen.git
+   cd gitmen
    ```
 
 2. Install Python dependencies (if not installed):
@@ -25,12 +25,12 @@ GitMan is a command-line tool designed to streamline dependency management and G
 
 3. Make the script executable (if needed):
    ```bash
-   chmod +x gitman.py
+   chmod +x gitmen.py
    ```
 
-4. Optionally, you can create a symbolic link to run `gitman` from anywhere:
+4. Optionally, you can create a symbolic link to run `gitmen` from anywhere:
    ```bash
-   ln -s /path/to/gitman.py /usr/local/bin/gitman
+   ln -s /path/to/gitmen.py /usr/local/bin/gitmen
    ```
 
 ## Usage
@@ -39,61 +39,61 @@ GitMan is a command-line tool designed to streamline dependency management and G
 
 - Update dependencies in a specific project directory:
   ```bash
-  gitman -u /path/to/project_directory
+  gitmen -u /path/to/project_directory
   ```
 
 - Ignore specific dependencies during updates:
   ```bash
-  gitman -u /path/to/project_directory -i dependency1,dependency2
+  gitmen -u /path/to/project_directory -i dependency1,dependency2
   ```
 
 - Check outdated dependencies across all projects:
   ```bash
-  gitman -a
+  gitmen -a
   ```
 
 - Check Git status in all projects:
   ```bash
-  gitman -g
+  gitmen -g
   ```
 
 - Update dependencies using `npm-check-updates` and commit changes:
   ```bash
-  gitman -n /path/to/project_directory
+  gitmen -n /path/to/project_directory
   ```
 
 ### Additional Commands
 
 - Specify the base directory where projects are located (default is `~/Documents`):
   ```bash
-  gitman -b /path/to/base_directory -u /path/to/project_directory
+  gitmen -b /path/to/base_directory -u /path/to/project_directory
   ```
 
 - Use a custom commit message when updating dependencies:
   ```bash
-  gitman -u /path/to/project_directory -m "your custom commit message"
+  gitmen -u /path/to/project_directory -m "your custom commit message"
   ```
 
 - Use a custom commit message with `npm-check-updates`:
   ```bash
-  gitman -n /path/to/project_directory -m "your custom commit message"
+  gitmen -n /path/to/project_directory -m "your custom commit message"
   ```
 
 ### Additional Options
 
 - Select the language for the CLI interface:
   ```bash
-  gitman language
+  gitmen language
   ```
 
 - Display program version:
   ```bash
-  gitman -v
+  gitmen -v
   ```
 
 - Display help message:
   ```bash
-  gitman --help
+  gitmen --help
   ```
 
 ## Learn More

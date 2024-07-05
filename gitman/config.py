@@ -6,7 +6,7 @@ import inquirer
 import json
 import os
 
-CONFIG_FILE = os.path.expanduser("~/.gitman_config.json")
+CONFIG_FILE = os.path.expanduser("~/.gitmen_config.json")
 
 
 def save_config(config):

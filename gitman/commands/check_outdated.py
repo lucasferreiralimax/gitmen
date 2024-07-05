@@ -6,7 +6,7 @@ import pyperclip
 from rich.console import Console
 from rich.rule import Rule
 
-from ..codeArt import gitmanArt
+from ..codeArt import gitmenArt
 from ..commands import projects_update_from_check
 import inquirer
 from inquirer import Checkbox, Text, Confirm
@@ -96,9 +96,9 @@ def check_outdated(base_dir):
             # Capturar a mensagem do commit
             commit_message = capture_commit_message()
 
-            # Montar o comando gitman -u com as dependências ignoradas e a mensagem do commit
+            # Montar o comando gitmen -u com as dependências ignoradas e a mensagem do commit
             projects_list = ",".join(selected_projects)
-            command_parts = ["gitman", "-u", f'"{projects_list}"']
+            command_parts = ["gitmen", "-u", f'"{projects_list}"']
 
             if ignore_list:
                 command_parts.extend(["-i", f'"{ignore_list}"'])
@@ -127,7 +127,7 @@ def check_outdated(base_dir):
         console.print(f":warning: {i18n.t('check_outdated.no_projects_update')}")
         console.print(Rule(style="grey11"))
 
-    console.print(f"[bold red]{gitmanArt}[/bold red]")
+    console.print(f"[bold red]{gitmenArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('check_outdated.complete_check')}")
 
 

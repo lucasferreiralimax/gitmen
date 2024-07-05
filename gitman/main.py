@@ -14,14 +14,14 @@ from .commands import (
     check_status,
     check_github,
 )
-from .codeArt import gitmanArt
+from .codeArt import gitmenArt
 
 console = Console()
 
 
 # Função para exibir o uso correto do script
 def usage():
-    console.print(f"[bold red]{gitmanArt}[/bold red]")
+    console.print(f"[bold red]{gitmenArt}[/bold red]")
     print(i18n.t("main.usage.description"))
     for i in range(1, 10):
         new_line = "line" + str(i)
@@ -94,9 +94,9 @@ def app():
             )
 
     except KeyboardInterrupt:
-        console.print(f"[bold red]{gitmanArt}[/bold red]")
+        console.print(f"[bold red]{gitmenArt}[/bold red]")
         console.print(
-            ":skull: [bold red3]GitmanArt execution interrupted; exiting.[/bold red3]"
+            ":skull: [bold red3]Gitmen execution interrupted; exiting.[/bold red3]"
         )
         sys.exit(0)
 

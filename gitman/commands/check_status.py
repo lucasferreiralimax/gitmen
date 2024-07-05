@@ -3,7 +3,7 @@ import subprocess
 import i18n
 from rich.console import Console
 from rich.rule import Rule
-from ..codeArt import gitmanArt
+from ..codeArt import gitmenArt
 
 console = Console()
 
@@ -42,5 +42,5 @@ def check_status(base_dir):
                 os.chdir("..")
                 console.print(Rule(style="grey11"))
 
-    console.print(f"[bold red]{gitmanArt}[/bold red]")
+    console.print(f"[bold red]{gitmenArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('check_status.complete_status')}")

@@ -4,12 +4,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="gitman",
+    name="gitmen",
     version="0.2.0",
     description="CLI tool for managing GitHub projects, updating dependencies, and checking project statuses.",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/lucasferreiralimax/gitman",
+    url="https://github.com/lucasferreiralimax/gitmen",
     author="lucasferreiralimax",
     author_email="lucasferreiralimax@gmail.com",
     classifiers=[
@@ -22,16 +22,16 @@ setup(
         "Operating System :: Unix",
     ],
     python_requires=">=3.12",
-    py_modules=["gitman.main"],
+    py_modules=["gitmen.main"],
     entry_points={
         "console_scripts": [
-            "gitman = gitman.main:app",
+            "gitmen = gitmen.main:app",
         ],
     },
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        "gitman": ["translations/*.yml"],
+        "gitmen": ["translations/*.yml"],
     },
     install_requires=["python-i18n", "inquirer"],
     keywords="github cli projects dependencies",

@@ -5,10 +5,10 @@ import inquirer
 from rich.console import Console
 from rich.table import Table
 import i18n
-from ..codeArt import gitmanArt
+from ..codeArt import gitmenArt
 
 console = Console()
-CONFIG_GITHUB = os.path.expanduser("~/.gitman_github.json")
+CONFIG_GITHUB = os.path.expanduser("~/.gitmen_github.json")
 
 
 def save_config(username, token):
@@ -79,7 +79,7 @@ def check_github():
         # display_comparison_table_back(username, followers, following)
         
 
-    console.print(f"[bold red]{gitmanArt}[/bold red]")
+    console.print(f"[bold red]{gitmenArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('check_status.complete_status')}")
 
 
