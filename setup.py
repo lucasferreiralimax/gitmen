@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="gitmen",
-    version="0.2.0",
+    version="0.3.0",
     description="CLI tool for managing GitHub projects, updating dependencies, and checking project statuses.",
     long_description=long_description,
     long_description_content_type="text/markdown",
