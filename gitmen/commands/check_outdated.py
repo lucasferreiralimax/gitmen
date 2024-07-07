@@ -18,117 +18,125 @@ all_dependencies = {}
 
 # Função para verificar dependências desatualizadas em todos os projetos
 def check_outdated(base_dir):
-    for dir in os.listdir(base_dir):
-        full_path = os.path.join(base_dir, dir)
-        if os.path.isdir(full_path):
-            package_json_path = os.path.join(full_path, "package.json")
-            if os.path.exists(package_json_path):
-                console.print(
-                    f":file_folder: {i18n.t('check_outdated.entering_directory', fullpath=f'[bold cyan]{full_path}[/bold cyan]')}"
-                )
-                os.chdir(full_path)
+    try:
+        for dir in os.listdir(base_dir):
+            full_path = os.path.join(base_dir, dir)
+            if os.path.isdir(full_path):
+                package_json_path = os.path.join(full_path, "package.json")
+                if os.path.exists(package_json_path):
+                    console.print(
+                        f":file_folder: {i18n.t('check_outdated.entering_directory', fullpath=f'[bold cyan]{full_path}[/bold cyan]')}"
+                    )
+                    os.chdir(full_path)
 
-                try:
-                    default_result = subprocess.run(["npm", "outdated"])
-                    if default_result.returncode == 0:
-                        console.print(
-                            f":white_check_mark: [bold]{i18n.t('check_outdated.no_outdated_dependencies', fullpath=f'[bold white]{dir}[/bold white]')}[/bold]"
-                        )
-                    else:
-                        text_result = subprocess.run(
-                            ["npm", "outdated"], text=True, stdout=subprocess.PIPE
-                        )
-                        projects_to_update.append(dir)
-                        dependencies = parse_outdated_output(text_result.stdout)
-                        all_dependencies[dir] = dependencies
+                    try:
+                        default_result = subprocess.run(["npm", "outdated"])
+                        if default_result.returncode == 0:
+                            console.print(
+                                f":white_check_mark: [bold]{i18n.t('check_outdated.no_outdated_dependencies', fullpath=f'[bold white]{dir}[/bold white]')}[/bold]"
+                            )
+                        else:
+                            text_result = subprocess.run(
+                                ["npm", "outdated"], text=True, stdout=subprocess.PIPE
+                            )
+                            projects_to_update.append(dir)
+                            dependencies = parse_outdated_output(text_result.stdout)
+                            all_dependencies[dir] = dependencies
 
-                except subprocess.CalledProcessError as e:
-                    if e.stderr:
-                        console.print(
-                            i18n.t("check_outdated.error", fullpath=full_path)
-                        )
-                        console.print(e.stderr)
+                    except subprocess.CalledProcessError as e:
+                        if e.stderr:
+                            console.print(
+                                i18n.t("check_outdated.error", fullpath=full_path)
+                            )
+                            console.print(e.stderr)
 
-                os.chdir("..")
+                    os.chdir("..")
+                    console.print(Rule(style="grey11"))
+
+        # Verifica se há projetos para atualizar
+        if projects_to_update:
+            # Perguntar se deseja criar o update
+            if confirm_update():
+                selected_projects = select_projects_to_update()
                 console.print(Rule(style="grey11"))
 
-    # Verifica se há projetos para atualizar
-    if projects_to_update:
-        # Perguntar se deseja criar o update
-        if confirm_update():
-            selected_projects = select_projects_to_update()
-            console.print(Rule(style="grey11"))
+                # Coletar todas as dependências dos projetos selecionados
+                all_selected_dependencies = []
+                projects = {}
 
-            # Coletar todas as dependências dos projetos selecionados
-            all_selected_dependencies = []
-            projects = {}
+                for project in selected_projects:
+                    dependencies = all_dependencies.get(project, [])
+                    all_selected_dependencies.extend(dependencies)
+                    projects[project] = dependencies
 
-            for project in selected_projects:
-                dependencies = all_dependencies.get(project, [])
-                all_selected_dependencies.extend(dependencies)
-                projects[project] = dependencies
+                if not all_selected_dependencies:
+                    console.print(
+                        ":x: No dependencies selected to ignore. Exiting application."
+                    )
+                    sys.exit(0)
+                    return
 
-            if not all_selected_dependencies:
-                console.print(
-                    ":x: No dependencies selected to ignore. Exiting application."
+                # Remover duplicatas e ordenar as dependências
+                all_selected_dependencies = sorted(set(all_selected_dependencies))
+
+                # Exibir as dependências e permitir seleção para ignorar
+                ignored_dependencies = select_dependencies_to_ignore(
+                    all_selected_dependencies
                 )
-                sys.exit(0)
-                return
+                console.print(Rule(style="grey11"))
 
-            # Remover duplicatas e ordenar as dependências
-            all_selected_dependencies = sorted(set(all_selected_dependencies))
+                for project, dependencies in projects.items():
+                    projects[project] = [
+                        [dep for dep in dependencies if dep not in ignored_dependencies],
+                        [dep for dep in dependencies if dep in ignored_dependencies],
+                    ]
 
-            # Exibir as dependências e permitir seleção para ignorar
-            ignored_dependencies = select_dependencies_to_ignore(
-                all_selected_dependencies
-            )
+                # Formatar e exibir a lista final de dependências para ignorar
+                ignore_list = ",".join(ignored_dependencies)
+
+                # Capturar a mensagem do commit
+                commit_message = capture_commit_message()
+
+                # Montar o comando gitmen -u com as dependências ignoradas e a mensagem do commit
+                projects_list = ",".join(selected_projects)
+                command_parts = ["gitmen", "-u", f'"{projects_list}"']
+
+                if ignore_list:
+                    command_parts.extend(["-i", f'"{ignore_list}"'])
+
+                if commit_message:
+                    command_parts.extend(["-m", f'"{commit_message}"'])
+
+                command = " ".join(command_parts)
+                console.print(Rule(style="grey11"))
+
+                console.print(f"[bash]{command}[/bash]", style="turquoise2")
+                console.print(Rule(style="grey11"))
+
+                # Perguntar se deseja executar o comando
+                if confirm_execution():
+                    # execute_command(command)
+                    console.print(
+                        f":white_check_mark: {i18n.t('check_outdated.command_executed_successfully')}"
+                    )
+                    projects_update_from_check(projects, commit_message, base_dir)
+                else:
+                    pyperclip.copy(command)
+
+            console.print(Rule(style="grey11"))
+        else:
+            console.print(f":warning: {i18n.t('check_outdated.no_projects_update')}")
             console.print(Rule(style="grey11"))
 
-            for project, dependencies in projects.items():
-                projects[project] = [
-                    [dep for dep in dependencies if dep not in ignored_dependencies],
-                    [dep for dep in dependencies if dep in ignored_dependencies],
-                ]
+        console.print(f"[bold red]{gitmenArt}[/bold red]")
+        console.print(f":white_check_mark: {i18n.t('check_outdated.complete_check')}")
 
-            # Formatar e exibir a lista final de dependências para ignorar
-            ignore_list = ",".join(ignored_dependencies)
-
-            # Capturar a mensagem do commit
-            commit_message = capture_commit_message()
-
-            # Montar o comando gitmen -u com as dependências ignoradas e a mensagem do commit
-            projects_list = ",".join(selected_projects)
-            command_parts = ["gitmen", "-u", f'"{projects_list}"']
-
-            if ignore_list:
-                command_parts.extend(["-i", f'"{ignore_list}"'])
-
-            if commit_message:
-                command_parts.extend(["-m", f'"{commit_message}"'])
-
-            command = " ".join(command_parts)
-            console.print(Rule(style="grey11"))
-
-            console.print(f"[bash]{command}[/bash]", style="turquoise2")
-            console.print(Rule(style="grey11"))
-
-            # Perguntar se deseja executar o comando
-            if confirm_execution():
-                # execute_command(command)
-                console.print(
-                    f":white_check_mark: {i18n.t('check_outdated.command_executed_successfully')}"
-                )
-                projects_update_from_check(projects, commit_message, base_dir)
-            else:
-                pyperclip.copy(command)
-
-        console.print(Rule(style="grey11"))
-    else:
-        console.print(f":warning: {i18n.t('check_outdated.no_projects_update')}")
-        console.print(Rule(style="grey11"))
-
-    console.print(f"[bold red]{gitmenArt}[/bold red]")
-    console.print(f":white_check_mark: {i18n.t('check_outdated.complete_check')}")
+    except KeyboardInterrupt:
+        console.print(f"[bold red]{gitmenArt}[/bold red]")
+        console.print(
+            ":skull: [bold red3]Gitmen execution interrupted; exiting.[/bold red3]"
+        )
+        sys.exit(0)
 
 
 # Função para capturar a mensagem do commit
