@@ -2,7 +2,9 @@
 import os
 import sys
 import i18n
+import inquirer
 from rich.console import Console
+from rich.rule import Rule
 from .config import i18nConfig, select_language
 from .commands import (
     projects_update,
@@ -21,12 +23,51 @@ console = Console()
 
 # Função para exibir o uso correto do script
 def usage():
+    base_directory = os.path.expanduser("~/Documents")
     console.print(f"[bold red]{gitmenArt}[/bold red]")
     print(i18n.t("main.usage.description"))
     for i in range(1, 10):
         new_line = "line" + str(i)
         print(i18n.t("main.usage." + new_line))
-    sys.exit(1)
+
+    console.print(Rule(style="grey11"))
+
+    while True:
+        # Adicionar seleção interativa
+        questions = [
+            inquirer.List(
+                "choice",
+                message=i18n.t("comman.select_operation"),
+                choices=[
+                    i18n.t("comman.check_outdated_deps"),
+                    i18n.t("comman.check_git_status"),
+                    i18n.t("comman.check_github"),
+                    i18n.t("comman.select_language"),
+                    i18n.t("comman.exit"),
+                ],
+            ),
+        ]
+        answers = inquirer.prompt(questions)
+        choice = answers["choice"]
+
+        if choice == i18n.t("comman.check_outdated_deps"):
+            check_outdated(base_directory)
+            console.print(Rule(style="grey11"))
+        elif choice == i18n.t("comman.check_git_status"):
+            check_status(base_directory)
+            console.print(Rule(style="grey11"))
+        elif choice == i18n.t("comman.check_github"):
+            check_github()
+            console.print(Rule(style="grey11"))
+        elif choice == i18n.t("comman.select_language"):
+            select_language()
+            console.print(Rule(style="grey11"))
+        elif choice == i18n.t("comman.exit"):
+            console.print(f"[bold red]{gitmenArt}[/bold red]")
+            console.print(":skull: [bold red3]" + i18n.t("comman.goodbye_message") + "[/bold red3]")
+            break
+
+    sys.exit(0)
 
 
 # Função principal do programa
