@@ -4,7 +4,6 @@ import platform
 import subprocess
 import inquirer
 import json
-import os
 
 CONFIG_FILE = os.path.expanduser("~/.gitmen_config.json")
 
@@ -43,6 +42,7 @@ def select_language():
     ]
     answers = inquirer.prompt(questions)
     set_language(answers["language"])
+    i18n.set("locale", answers["language"])  # Atualizar o idioma no i18n
     print(i18n.t("comman.language_set", language=answers["language"]))
 
 
