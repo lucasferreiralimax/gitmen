@@ -6,11 +6,12 @@ console = Console()
 
 
 def deps_logs(deps_up, deps_off=None):
-    for item_ignore in deps_off:
-        console.print(
-            f":stop_sign: [bright_red]{i18n.t('update.up_ignore_package')}[/] [bold orange4]{item_ignore}[/]"
-        )
-        console.print(Rule(style="grey11"))
+    if deps_off:
+        for item_ignore in deps_off:
+            console.print(
+                f":stop_sign: [bright_red]{i18n.t('update.up_ignore_package')}[/] [bold orange4]{item_ignore}[/]"
+            )
+            console.print(Rule(style="grey11"))
     for item_install in deps_up:
         console.print(
             f":rocket: [cyan]{i18n.t('update.up_update_package')}[/] [bold white]{item_install}[/]"
