@@ -90,6 +90,13 @@ def i18nConfig():
     package_dir = os.path.dirname(os.path.abspath(__file__))
     translations_path = os.path.join(package_dir, "translations")
 
+    # print(f"Translations path: {translations_path}")
+    # print(f"System language: {system_lang}")
+
     i18n.load_path.append(translations_path)
     i18n.set("fallback", "en")
     i18n.set("locale", system_lang)
+
+    # print(f"i18n load_path: {i18n.load_path}")
+    # print(f"i18n locale: {i18n.get('locale')}")
+    # print(f"i18n fallback: {i18n.get('fallback')}")
