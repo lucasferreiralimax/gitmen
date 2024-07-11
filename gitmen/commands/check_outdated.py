@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+import platform
 import i18n
 import pyperclip
 from rich.console import Console
@@ -14,6 +15,7 @@ from inquirer import Checkbox, Text, Confirm
 console = Console()
 projects_to_update = []
 all_dependencies = {}
+windowsOS = platform.system() == "Windows"
 
 # Função para verificar dependências desatualizadas em todos os projetos
 def check_outdated(base_dir):
@@ -29,14 +31,14 @@ def check_outdated(base_dir):
                     os.chdir(full_path)
 
                     try:
-                        default_result = subprocess.run(["npm", "outdated"], shell=True)
+                        default_result = subprocess.run(["npm", "outdated"], shell=windowsOS)
                         if default_result.returncode == 0:
                             console.print(
                                 f":white_check_mark: [bold]{i18n.t('check_outdated.no_outdated_dependencies', fullpath=f'[bold white]{dir}[/bold white]')}[/bold]"
                             )
                         else:
                             text_result = subprocess.run(
-                                ["npm", "outdated"], text=True, stdout=subprocess.PIPE, shell=True
+                                ["npm", "outdated"], text=True, stdout=subprocess.PIPE, shell=windowsOS
                             )
                             projects_to_update.append(dir)
                             dependencies = parse_outdated_output(text_result.stdout)
