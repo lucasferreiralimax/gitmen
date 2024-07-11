@@ -33,6 +33,6 @@ setup(
     package_data={
         "gitmen": ["translations/*.yml"],
     },
-    install_requires=["python-i18n", "inquirer"],
+    install_requires=["python-i18n", "inquirer", "rich", "pyperclip", "requests", "json"],
     keywords="github cli projects dependencies",
 )
