@@ -7,6 +7,8 @@ pt:
   check_outdated_deps: "Verificar dependências desatualizadas"
   check_git_status: "Verificar status do git"
   check_github: "Verificar GitHub"
+  clone_repos: "Clonar repositórios"
+  enter_username: "Digite o usuário do Github"
   select_language: "Selecionar idioma"
   exit: "Sair"
   goodbye_message: "Gitmen saindo, Adeus."

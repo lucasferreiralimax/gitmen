@@ -7,6 +7,8 @@ en:
   check_outdated_deps: "Check outdated dependencies"
   check_git_status: "Check git status"
   check_github: "Check GitHub"
+  clone_repos: "Clone repositories"
+  enter_username: "Enter Github username"
   select_language: "Select language"
   exit: "Exit"
   goodbye_message: "Gitmen exiting, Good bye."

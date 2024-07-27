@@ -1,0 +1,8 @@
+en:
+  cloning: "Fetching repositories for user %{user}"
+  empty_user: "No repositories found for user %{user}"
+  github_error: "Error accessing the GitHub API: %{error}"
+  repo_error: "Error cloning the repository: %{error}"
+  repo_find: "Found %{repos_size} repositories. Starting the download..."
+  repo_clone: "Cloning %{repo_name} to %{dest_dir}..."
+  complete_clone: "Clone of all repositories complete."

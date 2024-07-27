@@ -1,0 +1,4 @@
+en:
+  installing: "Rodando script em %{fullpath}"
+  install_error: "Erro ao rodar script em %{fullpath}:"
+  complete_status: "Script concluído."
