@@ -15,7 +15,8 @@ from .commands import (
     check_outdated,
     check_status,
     check_github,
-    download_repos,
+    script,
+    clone_repos,
 )
 from .codeArt import gitmenArt
 
@@ -42,7 +43,7 @@ def usage():
                 choices=[
                     i18n.t("comman.check_outdated_deps"),
                     i18n.t("comman.check_git_status"),
-                    i18n.t("comman.download_github_repos"),
+                    i18n.t("comman.clone_repos"),
                     i18n.t("comman.check_github"),
                     i18n.t("comman.select_language"),
                     i18n.t("comman.exit"),
@@ -58,9 +59,9 @@ def usage():
         elif choice == i18n.t("comman.check_git_status"):
             check_status(base_directory)
             console.print(Rule(style="grey11"))
-        elif choice == i18n.t("comman.download_github_repos"):
-            username = input(i18n.t("comman.enter_github_username") + ": ")
-            download_repos(username, base_directory)
+        elif choice == i18n.t("comman.clone_repos"):
+            username = input(i18n.t("comman.enter_username") + ": ")
+            clone_repos(username, base_directory)
             console.print(Rule(style="grey11"))
         elif choice == i18n.t("comman.check_github"):
             check_github()
@@ -105,6 +106,10 @@ def app():
                 check_outdated(base_directory)
             elif opt == "-g":
                 check_status(base_directory)
+            elif opt == "-s":
+                script_run = " ".join(args)
+                script(base_directory, script_run)
+                sys.exit(0)
             elif opt == "-n":
                 type_update = "ncu"
                 project_directory = args.pop(0)
@@ -119,7 +124,7 @@ def app():
                 sys.exit(0)
             elif opt == "clone":
                 username = args.pop(0)
-                download_repos(username, base_directory)
+                clone_repos(username, base_directory)
                 sys.exit(0)
             elif opt == "language":
                 select_language()

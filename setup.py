@@ -21,7 +21,7 @@ setup(
         "Operating System :: MacOS",
         "Operating System :: Unix",
     ],
-    python_requires=">=3.12",
+    python_requires=">=3.9",
     py_modules=["gitmen.main"],
     entry_points={
         "console_scripts": [

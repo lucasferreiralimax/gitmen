@@ -6,7 +6,8 @@ from .get_cli_version import get_cli_version
 from .check_outdated import check_outdated
 from .check_status import check_status
 from .check_github import check_github
-from .download_repos import download_repos
+from .script import script
+from .clone_repos import clone_repos
 
 # Exportando funções/módulos
 __all__ = [
@@ -18,6 +19,7 @@ __all__ = [
     "check_outdated",
     "check_status",
     "check_github",
+    "script",
     "projects_update_from_check",
-    "download_repos",
+    "clone_repos",
 ]
