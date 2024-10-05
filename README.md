@@ -2,6 +2,8 @@
 
 GitMen is a command-line tool designed to streamline dependency management and Git repository status checks across multiple projects.
 
+For more information, you can visit the [GitMen project page on PyPI](https://pypi.org/project/gitmen)
+
 ## Installation
 
 ### Prerequisites
@@ -12,23 +14,32 @@ GitMen is a command-line tool designed to streamline dependency management and G
 
 ### Installation Steps
 
-1. Clone the GitMen repository:
+1. **Install GitMen via pip** (recommended):
+
+   ```bash
+   pip install gitmen
+   ```
+
+2. **Clone the GitMen repository** (optional, if you want to modify the source code):
+
    ```bash
    git clone https://github.com/lucasferreiralimax/gitmen.git
    cd gitmen
    ```
 
-2. Install Python dependencies (if not installed):
+3. **Install Python dependencies** (if you cloned the repository):
+
    ```bash
    pip install .
    ```
 
-3. Make the script executable (if needed):
+4. **Make the script executable** (if needed):
+
    ```bash
    chmod +x gitmen.py
    ```
 
-4. Optionally, you can create a symbolic link to run `gitmen` from anywhere:
+5. **Optionally, you can create a symbolic link to run `gitmen` from anywhere**:
    ```bash
    ln -s /path/to/gitmen.py /usr/local/bin/gitmen
    ```
@@ -38,21 +49,25 @@ GitMen is a command-line tool designed to streamline dependency management and G
 ### Basic Commands
 
 - **Update dependencies in a specific project directory:**
+
   ```bash
   gitmen -u /path/to/project_directory
   ```
 
 - **Ignore specific dependencies during updates:**
+
   ```bash
   gitmen -u /path/to/project_directory -i dependency1,dependency2
   ```
 
 - **Check outdated dependencies across all projects:**
+
   ```bash
   gitmen -a
   ```
 
 - **Check Git status in all projects:**
+
   ```bash
   gitmen -g
   ```
@@ -65,26 +80,31 @@ GitMen is a command-line tool designed to streamline dependency management and G
 ### Additional Commands
 
 - **Run a custom script on a project:**
+
   ```bash
   gitmen -s "custom script command"
   ```
 
 - **Run an Angular-specific update process:**
+
   ```bash
   gitmen ng /path/to/project_directory
   ```
 
 - **Fix Expo project dependencies:**
+
   ```bash
   gitmen expo /path/to/project_directory
   ```
 
 - **Specify the base directory where projects are located (default is `~/Documents`):**
+
   ```bash
   gitmen -b /path/to/base_directory -u /path/to/project_directory
   ```
 
 - **Use a custom commit message when updating dependencies:**
+
   ```bash
   gitmen -u /path/to/project_directory -m "your custom commit message"
   ```
@@ -97,6 +117,7 @@ GitMen is a command-line tool designed to streamline dependency management and G
 ### Repository and GitHub Integration
 
 - **Check GitHub repositories linked to your account:**
+
   ```bash
   gitmen github
   ```
@@ -109,11 +130,13 @@ GitMen is a command-line tool designed to streamline dependency management and G
 ### Language and Version
 
 - **Select the language for the CLI interface:**
+
   ```bash
   gitmen language
   ```
 
 - **Display program version:**
+
   ```bash
   gitmen -v
   ```
@@ -124,14 +147,23 @@ GitMen is a command-line tool designed to streamline dependency management and G
   ```
 
 ## Learn More
+
 ### :performing_arts: Com quem você pode conversar sobre o projeto?
+
 #### Who can you talk to about the project?
+
 #### ¿Con quién puedes hablar sobre el proyecto?
+
 #### С кем вы можете поговорить о проекте?
+
 #### 誰がプロジェクトについて話すことができますか？
+
 #### À qui pouvez-vous parler du projet?
+
 #### Proje ile ilgili kiminle konuşabilirsin ?
+
 #### 你能谈谈这个项目吗？
 
-* :ghost: @lucasferreiralimax
-* :email: lucasferreiralimax@gmail.com
+- :ghost: [@lucasferreiralimax](https://github.com/lucasferreiralimax)
+- :email: [lucasferreiralimax@gmail.com](mailto:lucasferreiralimax@gmail.com)
+  `
