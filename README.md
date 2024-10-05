@@ -37,61 +37,88 @@ GitMen is a command-line tool designed to streamline dependency management and G
 
 ### Basic Commands
 
-- Update dependencies in a specific project directory:
+- **Update dependencies in a specific project directory:**
   ```bash
   gitmen -u /path/to/project_directory
   ```
 
-- Ignore specific dependencies during updates:
+- **Ignore specific dependencies during updates:**
   ```bash
   gitmen -u /path/to/project_directory -i dependency1,dependency2
   ```
 
-- Check outdated dependencies across all projects:
+- **Check outdated dependencies across all projects:**
   ```bash
   gitmen -a
   ```
 
-- Check Git status in all projects:
+- **Check Git status in all projects:**
   ```bash
   gitmen -g
   ```
 
-- Update dependencies using `npm-check-updates` and commit changes:
+- **Update dependencies using `npm-check-updates` and commit changes:**
   ```bash
   gitmen -n /path/to/project_directory
   ```
 
 ### Additional Commands
 
-- Specify the base directory where projects are located (default is `~/Documents`):
+- **Run a custom script on a project:**
+  ```bash
+  gitmen -s "custom script command"
+  ```
+
+- **Run an Angular-specific update process:**
+  ```bash
+  gitmen ng /path/to/project_directory
+  ```
+
+- **Fix Expo project dependencies:**
+  ```bash
+  gitmen expo /path/to/project_directory
+  ```
+
+- **Specify the base directory where projects are located (default is `~/Documents`):**
   ```bash
   gitmen -b /path/to/base_directory -u /path/to/project_directory
   ```
 
-- Use a custom commit message when updating dependencies:
+- **Use a custom commit message when updating dependencies:**
   ```bash
   gitmen -u /path/to/project_directory -m "your custom commit message"
   ```
 
-- Use a custom commit message with `npm-check-updates`:
+- **Use a custom commit message with `npm-check-updates`:**
   ```bash
   gitmen -n /path/to/project_directory -m "your custom commit message"
   ```
 
-### Additional Options
+### Repository and GitHub Integration
 
-- Select the language for the CLI interface:
+- **Check GitHub repositories linked to your account:**
+  ```bash
+  gitmen github
+  ```
+
+- **Clone repositories from GitHub by username:**
+  ```bash
+  gitmen clone username
+  ```
+
+### Language and Version
+
+- **Select the language for the CLI interface:**
   ```bash
   gitmen language
   ```
 
-- Display program version:
+- **Display program version:**
   ```bash
   gitmen -v
   ```
 
-- Display help message:
+- **Display help message:**
   ```bash
   gitmen --help
   ```
