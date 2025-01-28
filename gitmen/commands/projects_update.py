@@ -1,5 +1,6 @@
 import os
 import subprocess
+import platform
 import i18n
 import re
 from rich.console import Console
@@ -7,6 +8,7 @@ from rich.rule import Rule
 from ..utils import deps_logs, logger_expection
 
 console = Console()
+windowsOS = platform.system() == "Windows"
 
 
 # Função para atualizar dependências de um projeto
@@ -34,6 +36,7 @@ def projects_update(projects, ignored_deps, commit_message, base_dir):
                 ["npm", "outdated", "--parseable", "--depth=0"],
                 capture_output=True,
                 text=True,
+                shell=windowsOS
             )
 
             # Exibir a saída completa para depuração
@@ -61,7 +64,7 @@ def projects_update(projects, ignored_deps, commit_message, base_dir):
                 ignored_array = [dep.strip() for dep in ignored_deps.split(",")]
                 pattern = r"@\d+\.\d+\.\d+$"
                 for package in outdated_packages.split("\n"):
-                    package_name = package.split(":")[3]
+                    package_name = package.split(":")[2]
                     package_name_clean = re.sub(pattern, "", package_name)
                     if not any(
                         package_name_clean.strip() == ignored_dep
@@ -73,7 +76,7 @@ def projects_update(projects, ignored_deps, commit_message, base_dir):
                 deps_logs(deps_up=packages_names, deps_off=ignored_array)
             else:
                 for package in outdated_packages.split("\n"):
-                    package_name = package.split(":")[3]
+                    package_name = package.split(":")[2]
                     packages_names.append(package_name.strip())
 
             if outdated_packages:
@@ -125,15 +128,15 @@ def update_and_commit(packages_names, commit_message):
 
     # Atualiza todos os pacotes desatualizados de uma vez
     subprocess.run(
-        ["npm", "install"] + packages_names + ["--legacy-peer-deps"], check=True
+        ["npm", "install"] + packages_names + ["--legacy-peer-deps"], check=True, shell=windowsOS
     )
     console.print(Rule(style="grey11"))
 
     # Adiciona mudanças ao Git, cria um commit e faz push
-    subprocess.run(["git", "status"], check=True)
-    subprocess.run(["git", "add", "package.json", "package-lock.json"], check=True)
-    subprocess.run(["git", "commit", "-m", commit_message], check=True)
-    subprocess.run(["git", "push"], check=True)
+    subprocess.run(["git", "status"], check=True, shell=windowsOS)
+    subprocess.run(["git", "add", "package.json", "package-lock.json"], check=True, shell=windowsOS)
+    subprocess.run(["git", "commit", "-m", commit_message], check=True, shell=windowsOS)
+    subprocess.run(["git", "push"], check=True, shell=windowsOS)
     console.print(Rule(style="grey11"))
 
     console.print(

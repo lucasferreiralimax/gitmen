@@ -1,12 +1,13 @@
 import os
 import subprocess
+import platform
 import i18n
 from rich.console import Console
 from rich.rule import Rule
 from ..codeArt import gitmenArt
 
 console = Console()
-
+windowsOS = platform.system() == "Windows"
 
 # Função para instalar dependências em todos os projetos
 def script(base_dir, script_run):
@@ -24,7 +25,7 @@ def script(base_dir, script_run):
                     command = script_run.split()
 
                     result = subprocess.run(
-                        command, stdout=subprocess.PIPE, text=True
+                        command, stdout=subprocess.PIPE, text=True, shell=windowsOS
                     )
 
                     console.print(result.stdout)
