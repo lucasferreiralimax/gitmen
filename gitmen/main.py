@@ -60,8 +60,19 @@ def usage():
             check_status(base_directory)
             console.print(Rule(style="grey11"))
         elif choice == i18n.t("comman.clone_repos"):
-            username = input(i18n.t("comman.enter_username") + ": ")
-            clone_repos(username, base_directory)
+            questions = [
+                inquirer.Text("username", message=i18n.t("comman.enter_username")),
+                inquirer.Text(
+                    "repo_input",
+                    message="Digite os nomes dos repositórios separados por vírgula (ou pressione Enter para clonar todos)",
+                    default="",
+                ),
+            ]
+            answers = inquirer.prompt(questions) or {}
+            username = (answers.get("username") or "").strip()
+            repo_input = (answers.get("repo_input") or "").strip()
+            selected = [r.strip() for r in repo_input.split(",") if r.strip()] if repo_input else None
+            clone_repos(username, base_directory, selected_repos=selected)
             console.print(Rule(style="grey11"))
         elif choice == i18n.t("comman.check_github"):
             check_github()
@@ -124,7 +135,20 @@ def app():
                 sys.exit(0)
             elif opt == "clone":
                 username = args.pop(0)
-                clone_repos(username, base_directory)
+                repo_list = None
+                # se vier um segundo argumento (lista de repos), usa-o
+                if args and not args[0].startswith("-"):
+                    repo_arg = args.pop(0)
+                    repo_list = [r.strip() for r in repo_arg.split(",") if r.strip()]
+                else:
+                    # se não veio lista, pergunte interativamente antes de executar
+                    try:
+                        repo_input = input("Digite os nomes dos repositórios separados por vírgula (ou pressione Enter para clonar todos): ")
+                        repo_list = [r.strip() for r in repo_input.split(",") if r.strip()] if repo_input.strip() else None
+                    except EOFError:
+                        # em caso de falta de input (execução não interativa), mantém None para clonar todos
+                        repo_list = None
+                clone_repos(username, base_directory, selected_repos=repo_list)
                 sys.exit(0)
             elif opt == "language":
                 select_language()
