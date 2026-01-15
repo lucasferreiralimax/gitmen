@@ -9,6 +9,7 @@ en:
   check_github: "Check GitHub"
   clone_repos: "Clone repositories"
   enter_username: "Enter Github username"
+  enter_repo_list: "Enter repository names separated by comma (or press Enter to clone all)"
   select_language: "Select language"
   exit: "Exit"
   goodbye_message: "Gitmen exiting, Good bye."

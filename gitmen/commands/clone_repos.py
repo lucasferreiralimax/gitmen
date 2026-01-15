@@ -84,7 +84,10 @@ def clone_repos(username, base_directory, selected_repos=None):
     if selected_set is not None:
         not_found = selected_set - found_selected
         if not_found:
-            console.print(f":exclamation: Repositórios não encontrados: [bold red]{', '.join(sorted(not_found))}[/bold red]")
+            not_found_list = ", ".join(sorted(not_found))
+            console.print(
+                f":exclamation: {i18n.t('clone_repos.repo_not_found', repo_names=f'[bold red]{not_found_list}[/bold red]')}"
+            )
 
     console.print(f"[bold red]{gitmenArt}[/bold red]")
     console.print(f":white_check_mark: {i18n.t('clone_repos.complete_clone')}")

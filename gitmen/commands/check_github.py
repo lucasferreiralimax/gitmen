@@ -15,7 +15,9 @@ def save_config(username, token):
     config = {"username": username, "token": token}
     with open(CONFIG_GITHUB, "w") as f:
         json.dump(config, f)
-    console.print(f"Saved GitHub credentials: {username}")
+    console.print(
+        f":white_check_mark: {i18n.t('check_github.saved_credentials', username=f'[bold cyan]{username}[/bold cyan]')}"
+    )
 
 
 def load_config():
@@ -23,7 +25,9 @@ def load_config():
         with open(CONFIG_GITHUB, "r") as f:
             config = json.load(f)
         username = config.get("username")
-        console.print(f"Loaded GitHub username: {username}")
+        console.print(
+            f":information_source: {i18n.t('check_github.loaded_username', username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
         return config.get("username"), config.get("token")
     return None, None
 
@@ -32,20 +36,22 @@ def check_github():
     saved_username, saved_token = load_config()
 
     if saved_username and saved_token:
-        console.print(f"Using saved GitHub credentials for user: {saved_username}")
+        console.print(
+            f":key: {i18n.t('check_github.using_saved_credentials', username=f'[bold cyan]{saved_username}[/bold cyan]')}"
+        )
         username = saved_username
         token = saved_token
     else:
-        console.print("No saved GitHub credentials found.")
+        console.print(f":warning: {i18n.t('check_github.no_saved_credentials')}")
         username = saved_username  # Use saved username if available
 
         questions = [
             inquirer.Text(
-                "username", message="Enter GitHub username", default=username
+                "username", message=i18n.t("check_github.prompt_username"), default=username
             ),
             inquirer.Password(
                 "token",
-                message="Enter GitHub token (leave blank for unauthenticated requests)",
+                message=i18n.t("check_github.prompt_token"),
                 default=None,
             ),
         ]
@@ -61,18 +67,30 @@ def check_github():
     following = get_all_github_data(username, "following", token)
 
     if followers is None:
-        console.print(f"❌ No followers found for user {username}")
+        console.print(
+            f":x: {i18n.t('check_github.followers_none', username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
     elif followers == []:
-        console.print(f"❌ Failed to fetch followers for user {username}")
+        console.print(
+            f":x: {i18n.t('check_github.followers_failed', username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
     else:
-        console.print(f"✅ Fetched {len(followers)} followers for user {username}")
+        console.print(
+            f":white_check_mark: {i18n.t('check_github.followers_fetched', count=len(followers), username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
 
     if following is None:
-        console.print(f"❌ No users followed by {username}")
+        console.print(
+            f":x: {i18n.t('check_github.following_none', username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
     elif following == []:
-        console.print(f"❌ Failed to fetch following for user {username}")
+        console.print(
+            f":x: {i18n.t('check_github.following_failed', username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
     else:
-        console.print(f"✅ Fetched {len(following)} users followed by {username}")
+        console.print(
+            f":white_check_mark: {i18n.t('check_github.following_fetched', count=len(following), username=f'[bold cyan]{username}[/bold cyan]')}"
+        )
 
     if followers and following:
         display_comparison_table(username, followers, following)
@@ -109,12 +127,12 @@ def get_github_data(username, endpoint, token=None, page=1):
         return response.json()
     elif response.status_code == 403:
         console.print(
-            f":x: Rate limit exceeded or authentication required for fetching {endpoint} for user {username}"
+            f":x: {i18n.t('check_github.rate_limit', endpoint=endpoint, username=f'[bold cyan]{username}[/bold cyan]')}"
         )
         return []
     else:
         console.print(
-            f":x: Failed to fetch {endpoint} for user {username}. Status code: {response.status_code}"
+            f":x: {i18n.t('check_github.fetch_failed_status', endpoint=endpoint, username=f'[bold cyan]{username}[/bold cyan]', status=response.status_code)}"
         )
         return []
 
@@ -123,18 +141,26 @@ def display_comparison_table(username, followers, following):
     followers_logins = {follower["login"]: follower for follower in followers}
     following_logins = {followed["login"]: followed for followed in following}
 
-    followers_table = Table(title=f"Followers and Following Comparison for {username}")
-    followers_table.add_column("User", style="cyan")
-    followers_table.add_column("Follows Back?", style="green")
+    followers_table = Table(
+        title=i18n.t("check_github.table_title", username=f"{username}")
+    )
+    followers_table.add_column(i18n.t("check_github.column_user"), style="cyan")
+    followers_table.add_column(
+        i18n.t("check_github.column_follows_back"), style="green"
+    )
 
     for follower in following_logins:
-        follows_back = "Yes" if follower in followers_logins else "No"
+        follows_back = (
+            i18n.t("check_github.yes_label")
+            if follower in followers_logins
+            else i18n.t("check_github.no_label")
+        )
         followers_table.add_row(follower, follows_back)
 
     console.print(followers_table)
 
-    console.print(f"Total followers: {len(followers)}")
-    console.print(f"Total following: {len(following)}")
+    console.print(i18n.t("check_github.total_followers", count=len(followers)))
+    console.print(i18n.t("check_github.total_following", count=len(following)))
     
 # def display_comparison_table_back(username, followers, following):
 #     followers_logins = {follower["login"]: follower for follower in followers}

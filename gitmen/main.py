@@ -64,7 +64,7 @@ def usage():
                 inquirer.Text("username", message=i18n.t("comman.enter_username")),
                 inquirer.Text(
                     "repo_input",
-                    message="Digite os nomes dos repositórios separados por vírgula (ou pressione Enter para clonar todos)",
+                    message=i18n.t("comman.enter_repo_list"),
                     default="",
                 ),
             ]
@@ -143,7 +143,7 @@ def app():
                 else:
                     # se não veio lista, pergunte interativamente antes de executar
                     try:
-                        repo_input = input("Digite os nomes dos repositórios separados por vírgula (ou pressione Enter para clonar todos): ")
+                        repo_input = input(i18n.t("comman.enter_repo_list") + ": ")
                         repo_list = [r.strip() for r in repo_input.split(",") if r.strip()] if repo_input.strip() else None
                     except EOFError:
                         # em caso de falta de input (execução não interativa), mantém None para clonar todos

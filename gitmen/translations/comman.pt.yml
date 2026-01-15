@@ -9,6 +9,7 @@ pt:
   check_github: "Verificar GitHub"
   clone_repos: "Clonar repositórios"
   enter_username: "Digite o usuário do Github"
+  enter_repo_list: "Digite os nomes dos repositórios separados por vírgula (ou pressione Enter para clonar todos)"
   select_language: "Selecionar idioma"
   exit: "Sair"
   goodbye_message: "Gitmen saindo, Adeus."

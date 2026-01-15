@@ -13,3 +13,5 @@ pt:
   command_executed_successfully: "Comando executado com sucesso"
   command_failed: "Falha ao executar o comando"
   command_execution_error: "Erro ao executar o comando"
+  no_dependencies_selected: "Nenhuma dependência selecionada para ignorar. Encerrando aplicação."
+  execution_interrupted: "Execução do Gitmen interrompida; saindo."

@@ -13,3 +13,5 @@ en:
   command_executed_successfully: "Command executed successfully"
   command_failed: "Command failed"
   command_execution_error: "Error executing command"
+  no_dependencies_selected: "No dependencies selected to ignore. Exiting application."
+  execution_interrupted: "Gitmen execution interrupted; exiting."

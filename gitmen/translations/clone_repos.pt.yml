@@ -1,8 +1,9 @@
-en:
-  cloning: "Obtendo repositórios para o usuário  %{user}"
+pt:
+  cloning: "Obtendo repositórios para o usuário %{user}"
   empty_user: "Nenhum repositório encontrado para o usuário %{user}"
   github_error: "Erro ao acessar a API do GitHub: %{error}"
   repo_error: "Erro ao clonar o repositório: %{error}"
   repo_find: "Encontrados %{repos_size} repositórios. Iniciando o download..."
   repo_clone: "Clonando %{repo_name} para %{dest_dir}..."
+  repo_not_found: "Repositórios não encontrados: %{repo_names}"
   complete_clone: "Clone de todos os repositórios concluído."

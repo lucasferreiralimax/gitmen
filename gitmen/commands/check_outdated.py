@@ -72,7 +72,7 @@ def check_outdated(base_dir):
 
                 if not all_selected_dependencies:
                     console.print(
-                        ":x: No dependencies selected to ignore. Exiting application."
+                        f":x: {i18n.t('check_outdated.no_dependencies_selected')}"
                     )
                     sys.exit(0)
                     return
@@ -135,7 +135,7 @@ def check_outdated(base_dir):
     except KeyboardInterrupt:
         console.print(f"[bold red]{gitmenArt}[/bold red]")
         console.print(
-            ":skull: [bold red3]Gitmen execution interrupted; exiting.[/bold red3]"
+            f":skull: [bold red3]{i18n.t('check_outdated.execution_interrupted')}[/bold red3]"
         )
         sys.exit(0)
 
