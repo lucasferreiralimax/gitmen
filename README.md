@@ -79,7 +79,7 @@ For more information, you can visit the [GitMen project page on PyPI](https://py
 
 ### Additional Commands
 
-- **Run a custom script on a project:**
+- **Run a custom script across all projects with package.json in the base directory:**
 
   ```bash
   gitmen -s "custom script command"
@@ -122,9 +122,16 @@ For more information, you can visit the [GitMen project page on PyPI](https://py
   gitmen github
   ```
 
-- **Clone repositories from GitHub by username:**
+- **Clone repositories from GitHub by username (optionally pass a comma-separated list to clone only some repos):**
   ```bash
   gitmen clone username
+  gitmen clone username repo1,repo2,repo3
+  ```
+
+- **Check followers/following on GitHub (prompts for username/token and caches locally):**
+
+  ```bash
+  gitmen github
   ```
 
 ### Language and Version
